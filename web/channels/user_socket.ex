@@ -2,7 +2,7 @@ defmodule Exnake.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", Exnake.RoomChannel
+  channel "game:*", Exnake.GameChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
