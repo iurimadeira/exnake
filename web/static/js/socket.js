@@ -59,4 +59,26 @@ gameChannel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
+document.addEventListener("keydown", event => {
+  switch (event.which) {
+    case 38:
+      console.log("change_direction: up");
+      gameChannel.push("change_direction", {body: "up"})
+      break;
+    case 40:
+      console.log("change_direction: down");
+      gameChannel.push("change_direction", {body: "down"})
+      break;
+    case 37:
+      console.log("change_direction: left");
+      gameChannel.push("change_direction", {body: "left"})
+      break;
+    case 39:
+      console.log("change_direction: right");
+      gameChannel.push("change_direction", {body: "right"})
+      break;
+  }
+
+})
+
 export default socket
