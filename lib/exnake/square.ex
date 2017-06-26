@@ -4,5 +4,5 @@ defmodule Exnake.Square do
   It may be a part of a snake's body or food.
   """
 
-  defstruct :x, :y
+  defstruct [:position_x, :position_y]
 end

@@ -1,20 +1,32 @@
 defmodule Exnake.GameChannel do
   use Exnake.Web, :channel
+  alias Exnake.{Game, Player}
+  require Logger
 
-  def join("game:lobby", payload, socket) do
+  def join("game:play", payload, socket) do
     if authorized?(payload) do
-      {:ok, socket}
+      Logger.debug "#{socket.assigns.user_id} joined the Play channel"
+      case Game.join(socket.assigns.user_id) do
+        {:ok, response} ->
+          {:ok, response, socket}
+        error ->
+          error
+      end
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
-  def handle_in("change_direction", payload, socket) do
+  def terminate(_reason, socket) do
+    Logger.debug "#{socket.assigns.user_id} left the Play channel"
+    Game.leave(socket.assigns.user_id)
+    socket
+  end
+
+  def handle_in("change_direction", %{"direction" => direction} = payload, socket) do
+    Player.change_direction(socket.assigns.user_id, direction)
     {:reply, {:ok, payload}, socket}
   end
 
-  # TODO Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
-  end
+  defp authorized?(_payload), do: true
 end

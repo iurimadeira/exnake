@@ -5,7 +5,8 @@
 // and connect at the socket path in "lib/my_app/endpoint.ex":
 import {Socket} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+const token = document.head.querySelector("[name=token]").content
+let socket = new Socket("/socket", {params: {token: token}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -54,7 +55,7 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let gameChannel = socket.channel("game:lobby", {})
+let gameChannel = socket.channel("game:play", {})
 gameChannel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
@@ -63,19 +64,19 @@ document.addEventListener("keydown", event => {
   switch (event.which) {
     case 38:
       console.log("change_direction: up");
-      gameChannel.push("change_direction", {body: "up"})
+      gameChannel.push("change_direction", {direction: "up"})
       break;
     case 40:
       console.log("change_direction: down");
-      gameChannel.push("change_direction", {body: "down"})
+      gameChannel.push("change_direction", {direction: "down"})
       break;
     case 37:
       console.log("change_direction: left");
-      gameChannel.push("change_direction", {body: "left"})
+      gameChannel.push("change_direction", {direction: "left"})
       break;
     case 39:
       console.log("change_direction: right");
-      gameChannel.push("change_direction", {body: "right"})
+      gameChannel.push("change_direction", {direction: "right"})
       break;
   }
 
