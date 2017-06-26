@@ -48,7 +48,6 @@ defmodule Exnake.Player do
   end
 
   def handle_call({:next_state}, _from, state = %State{}) do
-    IO.inspect state
     new_state = calculate_next_state(state)
     {:reply, new_state, new_state}
   end

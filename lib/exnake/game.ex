@@ -20,8 +20,16 @@ defmodule Exnake.Game do
   end
 
   def next_frame do
+    start_time = :os.system_time(:microsecond)
+    next_frame = calculate_next_frame()
+    end_time = :os.system_time(:microsecond)
+    Logger.debug "Calculated new frame for #{length(all_players_pids())} players in #{(end_time - start_time)}μs"
+    next_frame
+  end
+
+  defp calculate_next_frame do
     # Get next_state from all players
-    next_states = Enum.map(all_players_pids, fn (pid) ->
+    Enum.map(all_players_pids(), fn (pid) ->
       %{body_position: body_position} = Player.next_state(pid)
       body_position
     end)
