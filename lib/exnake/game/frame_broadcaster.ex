@@ -22,6 +22,6 @@ defmodule Exnake.Game.FrameBroadcaster do
   end
 
   defp schedule_broadcast_frame do
-    Process.send_after(self(), :broadcast_frame, 300)
+    Process.send_after(self(), :broadcast_frame, 150)
   end
 end

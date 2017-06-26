@@ -26,8 +26,8 @@
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div> <!-- /container -->
 
-    <div class="game">
-    </div>
+    <canvas id="game" width="1000" height="720">
+    </canvas>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

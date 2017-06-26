@@ -83,7 +83,30 @@ document.addEventListener("keydown", event => {
 })
 
 gameChannel.on("new_frame", payload => {
-    console.log("New frame: " + payload);
+    console.log("New frame: " + payload.frame);
+    renderFrame(payload.frame)
 })
+
+function renderFrame(frame) {
+  var canvas = document.getElementById("game");
+  var context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  frame.forEach (function(player) {
+    renderPlayer(player);
+  });
+}
+
+function renderPlayer(player) {
+  player.forEach (function(square) {
+    renderSquare(square.x, square.y);
+  });
+}
+
+function renderSquare(x, y) {
+  var canvas = document.getElementById("game");
+  var context = canvas.getContext("2d");
+  context.fillRect(x * 10, y * 10, 10, 10);
+}
 
 export default socket
