@@ -10,7 +10,7 @@ defmodule Exnake.Player do
 
   defmodule State do
     defstruct id: nil,
-      position: %{x: 0, y: 0},
+      body_position: [],
       direction: :up
   end
 
@@ -42,8 +42,16 @@ defmodule Exnake.Player do
   def handle_call({:next_state}, state = %State{}),
     do: {:reply, :ok, calculate_next_state(state)}
 
-  defp calculate_next_state(state) do
-    #TODO Calculate next position of all squares
+  defp calculate_next_state(%{body_position: [head | body]} = state) do
+    new_body = [calculate_next_head_position(head, direction) | body]
+    |> Enum.drop(-1)
+
+    %{state | body_position: new_body}
   end
+
+  defp calculate_next_head_position(%{x: x, y: y}, :up), do: %{x: x, y: y + 1}
+  defp calculate_next_head_position(%{x: x, y: y}, :down), do: %{x: x, y: y - 1}
+  defp calculate_next_head_position(%{x: x, y: y}, :left), do: %{x: x, y: y + 1}
+  defp calculate_next_head_position(%{x: x, y: y}, :right), do: %{x: x, y: y - 1}
 
 end
