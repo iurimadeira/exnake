@@ -17,18 +17,22 @@ defmodule Exnake.Player do
   ## Client
 
   def start_link(user_id) do
-    state = %State{id: user_id}
+    state = %State{id: user_id, body_position: [%{x: 1, y: 1}, %{x: 1, y: 2}]}
     GenServer.start_link(__MODULE__, state, [name: {:global, user_id}] )
   end
 
-  def change_direction(user_id, direction) do
+  def change_direction(user_id, "up"), do: change_direction(user_id, :up)
+  def change_direction(user_id, "down"), do: change_direction(user_id, :down)
+  def change_direction(user_id, "left"), do: change_direction(user_id, :left)
+  def change_direction(user_id, "right"), do: change_direction(user_id, :down)
+  def change_direction(user_id, direction) when is_atom(direction) do
     pid = :global.whereis_name(user_id)
     GenServer.cast(pid, {:change_direction, direction})
   end
 
   def next_state(pid), do: GenServer.call(pid, {:next_state})
 
-  ## Server
+  ## Server Callbacks
 
   def init(:ok, state) do
     {:ok, state}
@@ -39,12 +43,16 @@ defmodule Exnake.Player do
     {:noreply, %{state | direction: direction}}
   end
 
-  def handle_call({:next_state}, state = %State{}),
-    do: {:reply, :ok, calculate_next_state(state)}
+  def handle_call({:next_state}, _from, state = %State{}) do
+    IO.inspect state
+    new_state = calculate_next_state(state)
+    {:reply, new_state, new_state}
+  end
 
-  defp calculate_next_state(%{body_position: [head | body]} = state) do
-    new_body = [calculate_next_head_position(head, direction) | body]
-    |> Enum.drop(-1)
+  defp calculate_next_state(%{body_position: body_position} = state) do
+    [head | _] = body_position
+    new_body = [calculate_next_head_position(head, state.direction) | body_position]
+      |> Enum.drop(-1)
 
     %{state | body_position: new_body}
   end

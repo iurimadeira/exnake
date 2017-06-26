@@ -11,6 +11,7 @@ defmodule Exnake do
       supervisor(Exnake.Repo, []),
       supervisor(Exnake.Endpoint, []),
       supervisor(Exnake.Game, []),
+      worker(Exnake.Game.FrameBroadcaster, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

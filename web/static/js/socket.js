@@ -82,4 +82,8 @@ document.addEventListener("keydown", event => {
 
 })
 
+gameChannel.on("new_frame", payload => {
+    console.log("New frame: " + payload);
+})
+
 export default socket

@@ -1,5 +1,7 @@
 defmodule Exnake.Game do
   use Supervisor
+  require Logger
+  alias Exnake.{Endpoint, Player, Game}
 
   ## Client
 
@@ -17,7 +19,22 @@ defmodule Exnake.Game do
     Supervisor.terminate_child(__MODULE__, pid)
   end
 
-  ## Server
+  def next_frame do
+    # Get next_state from all players
+    next_states = Enum.map(all_players_pids, fn (pid) ->
+      %{body_position: body_position} = Player.next_state(pid)
+      body_position
+    end)
+  end
+
+  defp all_players_pids do
+    Enum.map(Supervisor.which_children(__MODULE__), fn (children) ->
+      {_, pid, _, _} = children
+      pid
+    end)
+  end
+
+  ## Server Callbacks
 
   def init(:ok) do
     children = [
