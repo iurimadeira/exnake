@@ -7,23 +7,13 @@ defmodule Exnake.Player do
 
   use GenServer
   require Logger
-  alias Exnake.Player.Movement
-
-  defmodule State do
-    defstruct id: nil,
-      body_position: [],
-      direction: :up
-  end
+  alias Exnake.Player.{Spawn, State, Movement}
 
   ## Client
 
   def start_link(user_id) do
-    state = %State{id: user_id, body_position: new_player_body()}
+    state = Spawn.new_player_state(user_id)
     GenServer.start_link(__MODULE__, state, [name: {:global, user_id}] )
-  end
-
-  defp new_player_body do
-    [%{x: 10, y: 10}, %{x: 10, y: 11}, %{x: 10, y: 12}, %{x: 10, y: 13}]
   end
 
   def change_direction(user_id, "up"), do: change_direction(user_id, :up)
