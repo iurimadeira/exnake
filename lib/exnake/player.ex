@@ -48,21 +48,9 @@ defmodule Exnake.Player do
   end
 
   def handle_call({:next_state}, _from, state = %State{}) do
-    new_state = calculate_next_state(state)
+    new_state = Movement.calculate_next_state(state)
     {:reply, new_state, new_state}
   end
 
-  defp calculate_next_state(%{body_position: body_position} = state) do
-    [head | _] = body_position
-    new_body = [calculate_next_head_position(head, state.direction) | body_position]
-      |> Enum.drop(-1)
-
-    %{state | body_position: new_body}
-  end
-
-  defp calculate_next_head_position(%{x: x, y: y}, :up), do: %{x: x, y: y - 1}
-  defp calculate_next_head_position(%{x: x, y: y}, :down), do: %{x: x, y: y + 1}
-  defp calculate_next_head_position(%{x: x, y: y}, :left), do: %{x: x - 1, y: y}
-  defp calculate_next_head_position(%{x: x, y: y}, :right), do: %{x: x + 1, y: y}
 
 end
