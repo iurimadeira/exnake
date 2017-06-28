@@ -51,6 +51,4 @@ defmodule Exnake.Player do
     new_state = Movement.calculate_next_state(state)
     {:reply, new_state, new_state}
   end
-
-
 end
