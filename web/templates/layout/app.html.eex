@@ -14,20 +14,14 @@
 
   <body>
     <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li>Exnake - Multiplayer Snake</li>
-          </ul>
-        </nav>
+      <header>
       </header>
-
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div> <!-- /container -->
 
-    <canvas id="game" width="1000" height="720">
-    </canvas>
+    <div id="game-bg">
+      <canvas id="game" width="1000" height="720">
+      </canvas>
+    </div>>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

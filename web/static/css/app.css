@@ -1,6 +1,11 @@
 /* This file is for your main application css. */
 
-.game {
+body {
+  background-color: #000;
+}
+
+#game {
+  background-color: #fff;
   width: 1000px;
   height: 720px;
   position: absolute;
@@ -8,5 +13,4 @@
   left: 50%;
   margin-left: -500px;
   margin-top: -360px;
-  background-color: #000;
 }
