@@ -7,6 +7,7 @@ defmodule Exnake.Player do
 
   use GenServer
   require Logger
+  alias Exnake.Player.Movement
 
   defmodule State do
     defstruct id: nil,
@@ -43,8 +44,7 @@ defmodule Exnake.Player do
   end
 
   def handle_cast({:change_direction, direction}, state = %State{}) do
-    Logger.debug "Player #{state.id} changed direction from #{state.direction} to #{direction}"
-    {:noreply, %{state | direction: direction}}
+    {:noreply, Movement.change_direction(state, direction)}
   end
 
   def handle_call({:next_state}, _from, state = %State{}) do
