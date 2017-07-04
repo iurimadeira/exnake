@@ -8,7 +8,7 @@ defmodule Exnake do
 
     # Define workers and child supervisors to be supervised
     children = [
-      supervisor(Exnake.Repo, []),
+      #supervisor(Exnake.Repo, []),
       supervisor(Exnake.Endpoint, []),
       supervisor(Exnake.Game, []),
       worker(Exnake.Game.FrameBroadcaster, []),
