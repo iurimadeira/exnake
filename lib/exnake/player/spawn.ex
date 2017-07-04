@@ -23,14 +23,15 @@ defmodule Exnake.Player.Spawn do
   defp add_random_head_position(state) do
     x = :rand.uniform(Settings.map_width()) - 1
     y = :rand.uniform(Settings.map_height()) - 1
-    %{state| head_position: %{x: x, y: y}}
+    %{state | head_position: %{x: x, y: y}}
   end
 
   defp add_player_body(%{head_position: head} = state) do
     Logger.debug "New player spawned at %{x: #{head.x}, y: #{head.y}"
-    Enum.map((0..@initial_size - 1), fn (square) ->
+    body = Enum.map((0..@initial_size - 1), fn (square) ->
       %{x: head.x, y: head.y + square}
     end)
+    %{state | body_position: body}
   end
   
 end

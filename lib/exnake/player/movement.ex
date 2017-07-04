@@ -5,7 +5,6 @@ defmodule Exnake.Player.Movement do
   """
 
   require Logger
-  alias Exnake.
 
   def change_direction(%{direction: :left} = state, :left), do: state
   def change_direction(%{direction: :left} = state, :right), do: state
@@ -20,30 +19,37 @@ defmodule Exnake.Player.Movement do
     %{state | direction: direction}
   end
 
-  def calculate_next_state(%{body_position: [head | _]} = state) do
-    new_body = {head, state.direction}
-      |> calculate_next_head_position
-      |> check_edges
-      |> merge_rest_of_body(state.body_position, state)
-
-    %{state | body_position: new_body, head_position: Enum.at(new_body, 0)}
+  def calculate_next_state(state) do
+    state
+    |> add_next_head_position
+    |> check_edges
+    |> add_rest_of_body
   end
 
-  defp calculate_next_head_position({%{x: x, y: y}, :up}), do: %{x: x, y: y - 1}
-  defp calculate_next_head_position({%{x: x, y: y}, :down}), do: %{x: x, y: y + 1}
-  defp calculate_next_head_position({%{x: x, y: y}, :left}), do: %{x: x - 1, y: y}
-  defp calculate_next_head_position({%{x: x, y: y}, :right}), do: %{x: x + 1, y: y}
+  defp add_next_head_position(%{direction: :up, head_position: %{x: x, y: y}} = state),
+    do: %{state | head_position: %{x: x, y: y - 1}}
+  defp add_next_head_position(%{direction: :down, head_position: %{x: x, y: y}} = state),
+    do: %{state | head_position: %{x: x, y: y + 1}}
+  defp add_next_head_position(%{direction: :left, head_position: %{x: x, y: y}} = state),
+    do: %{state | head_position: %{x: x - 1, y: y}}
+  defp add_next_head_position(%{direction: :right, head_position: %{x: x, y: y}} = state),
+    do: %{state | head_position: %{x: x + 1, y: y}}
 
-  defp check_edges(%{x: -1, y: y}), do: %{x: 100, y: y}
-  defp check_edges(%{x: 101, y: y}), do: %{x: 0, y: y}
-  defp check_edges(%{x: x, y: -1}), do: %{x: x, y: 72}
-  defp check_edges(%{x: x, y: 73}), do: %{x: x, y: 0}
+  defp check_edges(%{head_position: %{x: -1, y: y}} = state),
+    do: %{state | head_position: %{x: 100, y: y}}
+  defp check_edges(%{head_position: %{x: 101, y: y}} = state),
+    do: %{state | head_position: %{x: 0, y: y}}
+  defp check_edges(%{head_position: %{x: x, y: -1}} = state),
+    do: %{state | head_position: %{x: x, y: 72}}
+  defp check_edges(%{head_position: %{x: x, y: 73}} = state),
+    do: %{state | head_position: %{x: x, y: 0}}
   defp check_edges(head), do: head
 
-  defp merge_rest_of_body(head, old_body, %{food_eaten: true}),
-    do: [head | new_body]
-  defp merge_rest_of_body(head, old_body, %{food_eaten: false}) do
+  defp add_rest_of_body(%{body_position: old_body, food_eaten: true} = state) do
+    %{state | body_position: [state.head_position | old_body], food_eaten: false}
+  end
+  defp add_rest_of_body(%{body_position: old_body} = state) do
     new_body = Enum.drop(old_body, -1)
-    [head | new_body]
+    %{state | body_position: [state.head_position | new_body]}
   end
 end

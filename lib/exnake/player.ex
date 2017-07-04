@@ -30,6 +30,10 @@ defmodule Exnake.Player do
 
   def player_pid(user_id), do: :global.whereis_name(user_id)
 
+  def find_by_head(%{x: x, y: y}) do
+    #TODO Return list of players with this head_position
+  end
+
   ## Server Callbacks
 
   def init(:ok, state) do
@@ -42,6 +46,7 @@ defmodule Exnake.Player do
 
   def handle_cast({:eat_food}, state = %State{}) do
     {:noreply, Action.eat_food(state)}
+  end
 
   def handle_call({:next_state}, _from, state = %State{}) do
     new_state = Movement.calculate_next_state(state)
