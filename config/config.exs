@@ -6,8 +6,7 @@
 use Mix.Config
 
 # General application configuration
-config :exnake,
-  ecto_repos: [Exnake.Repo]
+#config :exnake, ecto_repos: [Exnake.Repo]
 
 # Configures the endpoint
 config :exnake, Exnake.Endpoint,
