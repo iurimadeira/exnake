@@ -1,5 +1,8 @@
 defmodule Exnake.Player.State do
   defstruct id: nil,
+    score: 0,
     body_position: [],
-    direction: :up
+    head_position: nil,
+    direction: :up,
+    food_eaten: false
 end
