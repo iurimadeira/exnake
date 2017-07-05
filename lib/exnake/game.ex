@@ -38,8 +38,8 @@ defmodule Exnake.Game do
 
   defp format_frame(%{players: players_state} = state) do
     players = Enum.map(players_state, fn (state) ->
-      %{body_position: body_position} = state
-      body_position
+      %{body_position: body_position, score: score, id: id} = state
+      %{body: body_position, score: score, id: id}
     end)
     %{state | players: players}
   end

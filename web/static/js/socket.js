@@ -55,9 +55,13 @@ let socket = new Socket("/socket", {params: {token: token}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
+let channelUserId = null;
 let gameChannel = socket.channel("game:play", {})
 gameChannel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("ok", resp => {
+    console.log("Joined successfully", resp);
+    channelUserId = resp.id;
+  })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 document.addEventListener("keydown", event => {
@@ -84,10 +88,10 @@ document.addEventListener("keydown", event => {
 
 gameChannel.on("new_frame", payload => {
     console.log("New frame: " + payload.frame);
-    renderFrame(payload.frame);
+    renderFrame(payload.frame, channelUserId);
 })
 
-function renderFrame(frame) {
+function renderFrame(frame, userId) {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -97,19 +101,24 @@ function renderFrame(frame) {
   });
 
   frame.players.forEach (function(player) {
-    renderPlayer(player);
+    if (player.id == userId) {
+      renderPlayer(player, "#ff0000");
+    } else {
+      renderPlayer(player);
+    }
   });
 }
 
-function renderPlayer(player) {
-  player.forEach (function(square) {
-    renderSquare(square.x, square.y);
+function renderPlayer(player, color) {
+  player.body.forEach (function(square) {
+    renderSquare(square.x, square.y, color);
   });
 }
 
-function renderSquare(x, y) {
+function renderSquare(x, y, color = "#000") {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
+  context.fillStyle = color;
   context.fillRect(x * 10, y * 10, 10, 10);
 }
 
