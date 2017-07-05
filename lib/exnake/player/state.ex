@@ -1,5 +1,6 @@
 defmodule Exnake.Player.State do
   defstruct id: nil,
+    dead: false,
     score: 0,
     body_position: [],
     head_position: nil,

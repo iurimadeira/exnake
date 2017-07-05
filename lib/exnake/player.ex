@@ -16,6 +16,9 @@ defmodule Exnake.Player do
     GenServer.start_link(__MODULE__, state, [name: {:global, user_id}] )
   end
 
+  def die(user_id),
+    do: GenServer.cast(player_pid(user_id), {:die})
+
   def eat_food(user_id),
     do: GenServer.cast(player_pid(user_id), {:eat_food})
 
@@ -30,7 +33,6 @@ defmodule Exnake.Player do
 
   def player_pid(user_id), do: :global.whereis_name(user_id)
 
-  #TODO Perform collision check between players
   def check_body_collisions(%{players: player_states}) do
     result = player_states
       |> get_collisions
@@ -42,7 +44,7 @@ defmodule Exnake.Player do
   defp kill_collided_players({player_states, collisions}) do
     players = Enum.map(player_states, fn (state) ->
       if Enum.member?(collisions, state.head_position) do
-        Player.die(state.id)
+        __MODULE__.die(state.id)
         nil
       else
         state
@@ -67,14 +69,24 @@ defmodule Exnake.Player do
     {:ok, state}
   end
 
+  def handle_cast({:die}, state) do
+    {:noreply, Action.die(state)}
+  end
+
+  def handle_cast({:change_direction, direction}, %{dead: true} = state),
+    do: {:noreply, state}
   def handle_cast({:change_direction, direction}, state = %State{}) do
     {:noreply, Movement.change_direction(state, direction)}
   end
 
+  def handle_cast({:eat_food}, %{dead: true} = state),
+    do: {:noreply, state}
   def handle_cast({:eat_food}, state = %State{}) do
     {:noreply, Action.eat_food(state)}
   end
 
+  def handle_call({:next_state}, _from, %{dead: true} = state),
+    do: {:reply, state, state}
   def handle_call({:next_state}, _from, state = %State{}) do
     new_state = Movement.calculate_next_state(state)
     {:reply, new_state, new_state}
