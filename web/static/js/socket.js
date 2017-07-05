@@ -103,7 +103,7 @@ function renderLeaderboards(frame) {
   });
 
   var leaderboardsHTML = "Leaderboards<br><br>";
-  sorted.forEach (function(player){
+  sorted.slice(0, 10).forEach (function(player){
     leaderboardsHTML += player.name + " - " + player.score + "<br>";
   })
   document.getElementById("leaderboards").innerHTML = leaderboardsHTML;

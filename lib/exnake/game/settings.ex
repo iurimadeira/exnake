@@ -8,5 +8,5 @@ defmodule Exnake.Game.Settings do
 
   def food_score_value, do: 10
 
-  def food_factor, do: 2
-end
+  def food_factor, do: 10
+end 
