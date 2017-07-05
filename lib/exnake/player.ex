@@ -30,11 +30,38 @@ defmodule Exnake.Player do
 
   def player_pid(user_id), do: :global.whereis_name(user_id)
 
-  def find_by_head(%{x: x, y: y}) do
-    #TODO Return list of players with this head_position
+  #TODO Perform collision check between players
+  def check_body_collisions(%{players: player_states}) do
+    result = player_states
+      |> get_collisions
+      |> kill_collided_players
+
+    %{players: result}
   end
 
-  ## Server Callbacks
+  defp kill_collided_players({player_states, collisions}) do
+    players = Enum.map(player_states, fn (state) ->
+      if Enum.member?(collisions, state.head_position) do
+        Player.die(state.id)
+        nil
+      else
+        state
+      end
+    end) |> Enum.reject(&is_nil/1)
+  end
+
+  @doc "Get collisions by looking for duplicated body_positions"
+  defp get_collisions(player_states) do
+    positions = Enum.map(player_states, fn (state) ->
+      %{body_position: body_position} = state
+      body_position
+    end) |> List.flatten
+
+    collisions = positions -- Enum.uniq(positions)
+    {player_states, collisions}
+  end
+
+  # Server Callbacks
 
   def init(:ok, state) do
     {:ok, state}

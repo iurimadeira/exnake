@@ -84,7 +84,7 @@ document.addEventListener("keydown", event => {
 
 gameChannel.on("new_frame", payload => {
     console.log("New frame: " + payload.frame);
-    renderFrame(payload.frame)
+    renderFrame(payload.frame);
 })
 
 function renderFrame(frame) {
@@ -92,7 +92,11 @@ function renderFrame(frame) {
   var context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  frame.forEach (function(player) {
+  frame.food.forEach(function(food) {
+    renderSquare(food.x, food.y);
+  });
+
+  frame.players.forEach (function(player) {
     renderPlayer(player);
   });
 }

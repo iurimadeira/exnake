@@ -10,7 +10,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :exnake, Exnake.Endpoint,
-  http: [port: 4000, ip: {0, 0, 0, 0}],
+  http: [port: 12345, ip: {0, 0, 0, 0}],
   secret_key_base: "9zl5Zv3PHmKC21uF5rEYksH3FlMyNtUeooaDO3LA7s8/3WH7LRB8FzNDnsEoM0cb",
   render_errors: [view: Exnake.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Exnake.PubSub,

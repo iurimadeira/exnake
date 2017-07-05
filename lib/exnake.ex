@@ -11,6 +11,7 @@ defmodule Exnake do
       #supervisor(Exnake.Repo, []),
       supervisor(Exnake.Endpoint, []),
       supervisor(Exnake.Game, []),
+      supervisor(Exnake.Food, []),
       worker(Exnake.Game.FrameBroadcaster, []),
     ]
 

@@ -1,7 +1,7 @@
 defmodule Exnake.Game do
   use Supervisor
   require Logger
-  alias Exnake.{Endpoint, Player, Game}
+  alias Exnake.{Endpoint, Player, Game, Food}
 
   ## Client
 
@@ -19,6 +19,8 @@ defmodule Exnake.Game do
     Supervisor.terminate_child(__MODULE__, pid)
   end
 
+  def die(_user_id), do: nil
+
   def next_frame do
     start_time = :os.system_time(:microsecond)
     next_frame = calculate_next_frame()
@@ -28,14 +30,27 @@ defmodule Exnake.Game do
   end
 
   defp calculate_next_frame do
-    # Get next_state from all players
-    Enum.map(all_players_pids(), fn (pid) ->
-      %{body_position: body_position} = Player.next_state(pid)
+    %{players: next_player_states()}
+    |> Player.check_body_collisions
+    |> Food.next_state
+    |> format_frame
+  end
+
+  defp format_frame(%{players: players_state} = state) do
+    players = Enum.map(players_state, fn (state) ->
+      %{body_position: body_position} = state
       body_position
+    end)
+    %{state | players: players}
+  end
+
+  defp next_player_states do
+    Enum.map(all_players_pids(), fn (pid) ->
+      Player.next_state(pid)
     end)
   end
 
-  defp all_players_pids do
+  def all_players_pids do
     Enum.map(Supervisor.which_children(__MODULE__), fn (children) ->
       {_, pid, _, _} = children
       pid
