@@ -34,10 +34,8 @@ defmodule Exnake.Food.Controller do
   def add_new_random_foods(food_map, players)
     when length(food_map) >= length(players),
     do: food_map
-  def add_new_random_foods(food_map, players) do
-    IO.inspect(length(players))
-    add_new_random_foods(food_map ++ [generate_random_food()], players)
-  end
+  def add_new_random_foods(food_map, players),
+    do: add_new_random_foods(food_map ++ [generate_random_food()], players)
 
   #TODO Make sure this position is empty
   def generate_random_food do
