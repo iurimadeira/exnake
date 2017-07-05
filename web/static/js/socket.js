@@ -56,7 +56,7 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channelUserId = null;
-let gameChannel = socket.channel("game:play", {})
+let gameChannel = socket.channel("game:play", {"name": prompt("Please, enter your name:")})
 gameChannel.join()
   .receive("ok", resp => {
     console.log("Joined successfully", resp);
@@ -67,19 +67,15 @@ gameChannel.join()
 document.addEventListener("keydown", event => {
   switch (event.which) {
     case 38:
-      console.log("change_direction: up");
       gameChannel.push("change_direction", {direction: "up"})
       break;
     case 40:
-      console.log("change_direction: down");
       gameChannel.push("change_direction", {direction: "down"})
       break;
     case 37:
-      console.log("change_direction: left");
       gameChannel.push("change_direction", {direction: "left"})
       break;
     case 39:
-      console.log("change_direction: right");
       gameChannel.push("change_direction", {direction: "right"})
       break;
   }
@@ -87,7 +83,6 @@ document.addEventListener("keydown", event => {
 })
 
 gameChannel.on("new_frame", payload => {
-    console.log("New frame: " + payload.frame);
     renderFrame(payload.frame, channelUserId);
 })
 
@@ -96,16 +91,45 @@ function renderFrame(frame, userId) {
   var context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  frame.food.forEach(function(food) {
-    renderSquare(food.x, food.y);
+  renderPlayers(frame, userId);
+  renderFood(frame);
+  renderHud(frame, userId);
+  renderLeaderboards(frame);
+}
+
+function renderLeaderboards(frame) {
+  var sorted = frame.players.sort(function(a, b){
+    return b.score - a.score;
   });
 
+  var leaderboardsHTML = "Leaderboards<br><br>";
+  sorted.forEach (function(player){
+    leaderboardsHTML += player.name + " - " + player.score + "<br>";
+  })
+  document.getElementById("leaderboards").innerHTML = leaderboardsHTML;
+}
+
+function renderPlayers(frame, userId) {
   frame.players.forEach (function(player) {
     if (player.id == userId) {
       renderPlayer(player, "#ff0000");
     } else {
       renderPlayer(player);
     }
+  });
+}
+
+function renderHud(frame, userId) {
+  frame.players.forEach (function(player) {
+    if (player.id == userId) {
+      document.getElementById("score").innerHTML = "Score: " + player.score;
+    }
+  });
+}
+
+function renderFood(frame) {
+  frame.food.forEach(function(food) {
+    renderSquare(food.x, food.y);
   });
 }
 

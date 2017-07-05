@@ -5,8 +5,8 @@ defmodule Exnake.Player.Spawn do
 
   @initial_size 4
 
-  def new_player_state(user_id) do
-    %State{id: user_id}
+  def new_player_state(user_id, name) do
+    %State{id: user_id, name: name}
     |> add_random_head_position
     |> add_random_direction
     |> add_player_body

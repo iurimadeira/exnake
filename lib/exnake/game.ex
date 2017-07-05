@@ -9,8 +9,8 @@ defmodule Exnake.Game do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def join(user_id) do
-    Supervisor.start_child(__MODULE__, [user_id])
+  def join(user_id, name) do
+    Supervisor.start_child(__MODULE__, [user_id, name])
     {:ok, %{id: user_id}}
   end
 
@@ -38,8 +38,8 @@ defmodule Exnake.Game do
 
   defp format_frame(%{players: players_state} = state) do
     players = Enum.map(players_state, fn (state) ->
-      %{body_position: body_position, score: score, id: id} = state
-      %{body: body_position, score: score, id: id}
+      %{body_position: body_position, score: score, id: id, name: name} = state
+      %{body: body_position, score: score, id: id, name: name}
     end)
     %{state | players: players}
   end

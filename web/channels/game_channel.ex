@@ -3,10 +3,10 @@ defmodule Exnake.GameChannel do
   alias Exnake.{Game, Player}
   require Logger
 
-  def join("game:play", payload, socket) do
+  def join("game:play", %{"name" => name} = payload, socket) do
     if authorized?(payload) do
       Logger.debug "#{socket.assigns.user_id} joined the Play channel"
-      case Game.join(socket.assigns.user_id) do
+      case Game.join(socket.assigns.user_id, name) do
         {:ok, response} ->
           {:ok, response, socket}
         error ->

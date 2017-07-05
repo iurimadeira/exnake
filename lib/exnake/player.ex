@@ -11,8 +11,8 @@ defmodule Exnake.Player do
 
   ## Client
 
-  def start_link(user_id) do
-    state = Spawn.new_player_state(user_id)
+  def start_link(user_id, name) do
+    state = Spawn.new_player_state(user_id, name)
     GenServer.start_link(__MODULE__, state, [name: {:global, user_id}] )
   end
 
