@@ -36,12 +36,12 @@ defmodule Exnake.Player.Movement do
     do: %{state | head_position: %{x: x + 1, y: y}}
 
   defp check_edges(%{head_position: %{x: -1, y: y}} = state),
-    do: %{state | head_position: %{x: 100, y: y}}
-  defp check_edges(%{head_position: %{x: 101, y: y}} = state),
+    do: %{state | head_position: %{x: 99, y: y}}
+  defp check_edges(%{head_position: %{x: 100, y: y}} = state),
     do: %{state | head_position: %{x: 0, y: y}}
   defp check_edges(%{head_position: %{x: x, y: -1}} = state),
-    do: %{state | head_position: %{x: x, y: 72}}
-  defp check_edges(%{head_position: %{x: x, y: 73}} = state),
+    do: %{state | head_position: %{x: x, y: 71}}
+  defp check_edges(%{head_position: %{x: x, y: 72}} = state),
     do: %{state | head_position: %{x: x, y: 0}}
   defp check_edges(head), do: head
 
