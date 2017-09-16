@@ -75,6 +75,8 @@ defmodule Exnake.Player do
 
   def handle_cast({:change_direction, direction}, %{dead: true} = state),
     do: {:noreply, state}
+  def handle_cast({:change_direction, direction}, %{move_lock: true} = state),
+    do: {:noreply, state}
   def handle_cast({:change_direction, direction}, state = %State{}) do
     {:noreply, Movement.change_direction(state, direction)}
   end
@@ -89,6 +91,6 @@ defmodule Exnake.Player do
     do: {:reply, state, state}
   def handle_call({:next_state}, _from, state = %State{}) do
     new_state = Movement.calculate_next_state(state)
-    {:reply, new_state, new_state}
+    {:reply, new_state, %{new_state | move_lock: false}}
   end
 end

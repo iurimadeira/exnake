@@ -6,5 +6,6 @@ defmodule Exnake.Player.State do
     body_position: [],
     head_position: nil,
     direction: :up,
+    move_lock: false,
     food_eaten: false
 end

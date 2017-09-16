@@ -16,7 +16,7 @@ defmodule Exnake.Player.Movement do
   def change_direction(%{direction: :down} = state, :down), do: state
   def change_direction(state, direction) do
     Logger.debug "#{state.id} changed direction from #{state.direction} do direction"
-    %{state | direction: direction}
+    %{state | move_lock: true, direction: direction}
   end
 
   def calculate_next_state(state) do
