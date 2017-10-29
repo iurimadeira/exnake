@@ -11,7 +11,7 @@ defmodule Exnake.Food do
   ## Client
 
   def start_link do
-    GenServer.start_link(__MODULE__, [], [name: __MODULE__] )
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def next_state(game_state) do
