@@ -25,33 +25,39 @@ defmodule Exnake.Game do
     start_time = :os.system_time(:microsecond)
     next_frame = calculate_next_frame()
     end_time = :os.system_time(:microsecond)
-    Logger.debug "Calculated new frame for #{length(all_players_pids())} players in #{(end_time - start_time)}μs"
+
+    Logger.debug(
+      "Calculated new frame for #{length(all_players_pids())} players in #{end_time - start_time}μs"
+    )
+
     next_frame
   end
 
   defp calculate_next_frame do
     %{players: next_player_states()}
-    |> Player.check_body_collisions
-    |> Food.next_state
+    |> Player.check_body_collisions()
+    |> Food.next_state()
     |> format_frame
   end
 
   defp format_frame(%{players: players_state} = state) do
-    players = Enum.map(players_state, fn (state) ->
-      %{body_position: body_position, score: score, id: id, name: name} = state
-      %{body: body_position, score: score, id: id, name: name}
-    end)
+    players =
+      Enum.map(players_state, fn state ->
+        %{body_position: body_position, score: score, id: id, name: name} = state
+        %{body: body_position, score: score, id: id, name: name}
+      end)
+
     %{state | players: players}
   end
 
   defp next_player_states do
-    Enum.map(all_players_pids(), fn (pid) ->
+    Enum.map(all_players_pids(), fn pid ->
       Player.next_state(pid)
     end)
   end
 
   def all_players_pids do
-    Enum.map(Supervisor.which_children(__MODULE__), fn (children) ->
+    Enum.map(Supervisor.which_children(__MODULE__), fn children ->
       {_, pid, _, _} = children
       pid
     end)
@@ -61,7 +67,7 @@ defmodule Exnake.Game do
 
   def init(:ok) do
     children = [
-      worker(Exnake.Player, [], [restart: :transient])
+      worker(Exnake.Player, [], restart: :transient)
     ]
 
     supervise(children, strategy: :simple_one_for_one)
