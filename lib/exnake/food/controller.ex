@@ -10,20 +10,25 @@ defmodule Exnake.Food.Controller do
   end
 
   def check_food_collision({food_map, game_state}) do
-    Enum.map(food_map, fn (food) ->
+    Enum.map(food_map, fn food ->
       case find_player_by_head(game_state, food) do
-        nil -> food
+        nil ->
+          food
+
         %Player.State{id: id} ->
           Player.eat_food(id)
           nil
       end
-    end) |> Enum.reject(&is_nil/1)
+    end)
+    |> Enum.reject(&is_nil/1)
   end
 
   defp find_player_by_head(%{players: players}, position) do
-    result = Enum.filter(players, fn (player) ->
-      player.head_position == position
-    end)
+    result =
+      Enum.filter(players, fn player ->
+        player.head_position == position
+      end)
+
     case result do
       [player] -> player
       [] -> nil
@@ -43,7 +48,7 @@ defmodule Exnake.Food.Controller do
     length(players) * Settings.food_factor()
   end
 
-  #TODO Make sure this position is empty
+  # TODO Make sure this position is empty
   def generate_random_food do
     x = :rand.uniform(Settings.map_width()) - 1
     y = :rand.uniform(Settings.map_height()) - 1
