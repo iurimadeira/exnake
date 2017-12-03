@@ -58,8 +58,9 @@ socket.connect()
 let enemiesColor = '#A10EEC'; //Purple
 let gridColor = '#00E6FE'; //Cyan
 let foodColor = '#FD1999'; //Pink
-let uiColor = '#FFF001'; //Yellow
+let uiColor = '#FFF'; //Yellow
 let playerColor = '#99FC20'; //Green
+let glowFactor = 20;
 
 // Map Size
 let mapWidth = 160;
@@ -103,7 +104,7 @@ function renderFrame(frame, userId) {
   context.canvas.width  = window.innerWidth;
   context.canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.shadowBlur = 15;
+  context.shadowBlur = glowFactor;
 
   renderBackgroundGrid();
   renderPlayers(frame, userId);
@@ -137,9 +138,19 @@ function renderPlayers(frame, userId) {
 function renderHud(frame, userId) {
   frame.players.forEach (function(player) {
     if (player.id == userId) {
-      document.getElementById("score").innerHTML = "Score: " + player.score;
+      renderScore(player.score);
     }
   });
+}
+
+function renderScore(score) {
+  var canvas = document.getElementById("game");
+  var context = canvas.getContext("2d");
+  var paddedScore = ("00000000" + score).slice(-8);
+  context.shadowColor = uiColor;
+  context.fillStyle = uiColor;
+  context.font = "20px VCR_OSD_MONO";
+  context.fillText("SCORE " + paddedScore, 30, 30);
 }
 
 function renderFood(frame) {

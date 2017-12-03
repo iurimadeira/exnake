@@ -7,6 +7,11 @@ html, body {
   margin: 0px;
 }
 
+@font-face {
+  font-family: 'VCR_OSD_MONO';
+  src: url('/fonts/vcr_osd_mono.ttf');
+}
+
 #game {
   width: 100%;
   height: 100%;
