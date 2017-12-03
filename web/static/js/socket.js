@@ -150,7 +150,7 @@ function renderScore(score) {
   context.shadowColor = uiColor;
   context.fillStyle = uiColor;
   context.font = "20px VCR_OSD_MONO";
-  context.fillText("SCORE " + paddedScore, 30, 30);
+  context.fillText("SCORE " + paddedScore, 30, 40);
 }
 
 function renderFood(frame) {
