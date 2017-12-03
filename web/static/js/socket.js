@@ -54,6 +54,14 @@ let socket = new Socket("/socket", {params: {token: token}})
 
 socket.connect()
 
+// Colors
+let enemiesColor = '#A10EEC'; //Purple
+//let gridColor = '#05EAFA'; //Cyan
+let gridColor = '#00E6FE'; //Cyan
+let foodColor = '#FD1999'; //Pink
+//let foodColor = '#FFF001'; //Yellow
+let playerColor = '#99FC20'; //Green
+
 // Now that you are connected, you can join channels with a topic:
 let channelUserId = null;
 let gameChannel = socket.channel("game:play", {"name": prompt("Please, enter your name:")})
@@ -90,7 +98,9 @@ function renderFrame(frame, userId) {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
+  context.shadowBlur = 15;
 
+  renderBackgroundGrid();
   renderPlayers(frame, userId);
   renderFood(frame);
   renderHud(frame, userId);
@@ -112,9 +122,9 @@ function renderLeaderboards(frame) {
 function renderPlayers(frame, userId) {
   frame.players.forEach (function(player) {
     if (player.id == userId) {
-      renderPlayer(player, "#ff0000");
+      renderPlayer(player, playerColor);
     } else {
-      renderPlayer(player);
+      renderPlayer(player, enemiesColor);
     }
   });
 }
@@ -129,7 +139,7 @@ function renderHud(frame, userId) {
 
 function renderFood(frame) {
   frame.food.forEach(function(food) {
-    renderSquare(food.x, food.y);
+    renderSquare(food.x, food.y, foodColor);
   });
 }
 
@@ -142,8 +152,56 @@ function renderPlayer(player, color) {
 function renderSquare(x, y, color = "#000") {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
+  context.shadowColor = color;
   context.fillStyle = color;
   context.fillRect(x * 10, y * 10, 10, 10);
+}
+
+function renderBackgroundGrid() {
+  var canvas = document.getElementById("game");
+  var context = canvas.getContext("2d");
+
+  let verticalStep = 0;
+  let horizontalStep = 0;
+  while (true) {
+    if (drawGridLine(context, 'vertical', verticalStep) == false) {
+      break;
+    }
+    verticalStep = verticalStep + 1;
+  }
+  while (true) {
+    if (drawGridLine(context, 'horizontal', horizontalStep) == false) {
+      break;
+    }
+    horizontalStep = horizontalStep + 1;
+  }
+}
+
+function drawGridLine(context, direction, step) {
+  let offset = 15;
+  let spaceBetweenLines = 30;
+  let position = (step * spaceBetweenLines) + offset;
+  let result = false;
+
+  context.strokeStyle = gridColor;
+  context.shadowColor = gridColor;
+  context.lineWidth = 1;
+
+  if (direction == 'vertical' && position <= window.innerWidth) {
+    context.beginPath();
+    context.moveTo(position, 0);
+    context.lineTo(position, window.innerHeight);
+    context.stroke();
+    result = true;
+  } else if (direction == 'horizontal' && position <= window.innerHeight) {
+    context.beginPath();
+    context.moveTo(0, position);
+    context.lineTo(window.innerWidth, position);
+    context.stroke();
+    result = true;
+  }
+
+  return result;
 }
 
 export default socket

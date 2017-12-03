@@ -19,9 +19,6 @@
     </div> <!-- /container -->
 
     <div id="exnake">
-      <div id="title">
-        Exnake
-      </div>
       <canvas id="game" width="1000" height="720">
       </canvas>
       <div id="hud">
@@ -33,6 +30,8 @@
         </div>
       </div>
     </div>
+
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
