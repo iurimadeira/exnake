@@ -4,6 +4,7 @@ defmodule Exnake.Player.Movement do
   Mainly called by Exnake.Player
   """
 
+  use Exnake.Game.Settings
   require Logger
 
   def change_direction(%{direction: :left} = state, :left), do: state
@@ -36,12 +37,12 @@ defmodule Exnake.Player.Movement do
     do: %{state | head_position: %{x: x + 1, y: y}}
 
   defp check_edges(%{head_position: %{x: -1, y: y}} = state),
-    do: %{state | head_position: %{x: 99, y: y}}
-  defp check_edges(%{head_position: %{x: 100, y: y}} = state),
+    do: %{state | head_position: %{x: @map_width - 1, y: y}}
+  defp check_edges(%{head_position: %{x: @map_width, y: y}} = state),
     do: %{state | head_position: %{x: 0, y: y}}
   defp check_edges(%{head_position: %{x: x, y: -1}} = state),
-    do: %{state | head_position: %{x: x, y: 71}}
-  defp check_edges(%{head_position: %{x: x, y: 72}} = state),
+    do: %{state | head_position: %{x: x, y: @map_height - 1}}
+  defp check_edges(%{head_position: %{x: x, y: @map_height}} = state),
     do: %{state | head_position: %{x: x, y: 0}}
   defp check_edges(head), do: head
 

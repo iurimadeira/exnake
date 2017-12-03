@@ -1,7 +1,7 @@
 defmodule Exnake.Player.Spawn do
   require Logger
+  use Exnake.Game.Settings
   alias Exnake.Player.State
-  alias Exnake.Game.Settings
 
   @initial_size 4
 
@@ -21,8 +21,8 @@ defmodule Exnake.Player.Spawn do
   end
 
   defp add_random_head_position(state) do
-    x = :rand.uniform(Settings.map_width()) - 1
-    y = :rand.uniform(Settings.map_height()) - 1
+    x = :rand.uniform(@map_width) - 1
+    y = :rand.uniform(@map_height) - 1
     %{state | head_position: %{x: x, y: y}}
   end
 

@@ -1,6 +1,6 @@
 defmodule Exnake.Food.Controller do
+  use Exnake.Game.Settings
   alias Exnake.Player
-  alias Exnake.Game.Settings
   alias Exnake.Player.State
 
   def calculate_next_frame(food_map, %{players: players} = game_state) do
@@ -45,13 +45,13 @@ defmodule Exnake.Food.Controller do
   end
 
   def maximum_food_quantity(players) do
-    length(players) * Settings.food_factor()
+    length(players) * @food_factor
   end
 
   # TODO Make sure this position is empty
   def generate_random_food do
-    x = :rand.uniform(Settings.map_width()) - 1
-    y = :rand.uniform(Settings.map_height()) - 1
+    x = :rand.uniform(@map_width) - 1
+    y = :rand.uniform(@map_height) - 1
     %{x: x, y: y}
   end
 end

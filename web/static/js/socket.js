@@ -56,11 +56,14 @@ socket.connect()
 
 // Colors
 let enemiesColor = '#A10EEC'; //Purple
-//let gridColor = '#05EAFA'; //Cyan
 let gridColor = '#00E6FE'; //Cyan
 let foodColor = '#FD1999'; //Pink
-//let foodColor = '#FFF001'; //Yellow
+let uiColor = '#FFF001'; //Yellow
 let playerColor = '#99FC20'; //Green
+
+// Map Size
+let mapWidth = 160;
+let mapHeight = 90;
 
 // Now that you are connected, you can join channels with a topic:
 let channelUserId = null;
@@ -97,6 +100,8 @@ gameChannel.on("new_frame", payload => {
 function renderFrame(frame, userId) {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
+  context.canvas.width  = window.innerWidth;
+  context.canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.shadowBlur = 15;
 
@@ -149,12 +154,20 @@ function renderPlayer(player, color) {
   });
 }
 
+function squareXSize() {
+  return window.innerWidth / mapWidth;
+}
+
+function squareYSize() {
+  return window.innerHeight / mapHeight;
+}
+
 function renderSquare(x, y, color = "#000") {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
   context.shadowColor = color;
   context.fillStyle = color;
-  context.fillRect(x * 10, y * 10, 10, 10);
+  context.fillRect(x * squareXSize(), y * squareYSize(), squareXSize(), squareYSize());
 }
 
 function renderBackgroundGrid() {

@@ -13,24 +13,8 @@
   </head>
 
   <body>
-    <div class="container">
-      <header>
-      </header>
-    </div> <!-- /container -->
-
-    <div id="exnake">
-      <canvas id="game" width="1000" height="720">
-      </canvas>
-      <div id="hud">
-        <div id="score">
-          Score: 0
-        </div>
-        <div id="leaderboards">
-          Leaderboards
-        </div>
-      </div>
-    </div>
-
+    <canvas id="game">
+    </canvas>
 
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>

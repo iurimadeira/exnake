@@ -1,12 +1,11 @@
 defmodule Exnake.Game.Settings do
-
-  def square_size, do: 10
-
-  def map_width, do: 100
-
-  def map_height, do: 72
-
-  def food_score_value, do: 10
-
-  def food_factor, do: 10
-end 
+  defmacro __using__(_) do
+    quote do
+      @square_size 10
+      @map_width 160
+      @map_height 90
+      @food_score_value 10
+      @food_factor 10
+    end
+  end
+end
