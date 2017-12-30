@@ -107,9 +107,9 @@ function renderFrame(frame, userId) {
   context.shadowBlur = glowFactor;
 
   renderBackgroundGrid();
+  renderHud(frame, userId);
   renderPlayers(frame, userId);
   renderFood(frame);
-  renderHud(frame, userId);
 }
 
 function renderPlayers(frame, userId) {
@@ -130,7 +130,7 @@ function renderScore(frame, userId) {
   frame.players.forEach (function(player, index) {
     if (index < 10) {
       renderPlayerScore(player.name, player.score, index + 1, index);
-    } else if (player.id == userId) {
+    } else if (player.id == userId && index > 10) {
       renderPlayerScore(player.name, player.score, index + 1, 10);
     }
   });

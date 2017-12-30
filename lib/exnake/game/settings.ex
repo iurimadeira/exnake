@@ -5,7 +5,7 @@ defmodule Exnake.Game.Settings do
       @map_width 160
       @map_height 90
       @food_score_value 10
-      @food_factor 20
+      @food_factor 10
     end
   end
 end
