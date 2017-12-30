@@ -110,19 +110,6 @@ function renderFrame(frame, userId) {
   renderPlayers(frame, userId);
   renderFood(frame);
   renderHud(frame, userId);
-  renderLeaderboards(frame);
-}
-
-function renderLeaderboards(frame) {
-  var sorted = frame.players.sort(function(a, b){
-    return b.score - a.score;
-  });
-
-  var leaderboardsHTML = "Leaderboards<br><br>";
-  sorted.slice(0, 10).forEach (function(player){
-    leaderboardsHTML += player.name + " - " + player.score + "<br>";
-  })
-  document.getElementById("leaderboards").innerHTML = leaderboardsHTML;
 }
 
 function renderPlayers(frame, userId) {
@@ -136,21 +123,29 @@ function renderPlayers(frame, userId) {
 }
 
 function renderHud(frame, userId) {
-  frame.players.forEach (function(player) {
-    if (player.id == userId) {
-      renderScore(player.score);
+  renderScore(frame, userId);
+}
+
+function renderScore(frame, userId) {
+  frame.players.forEach (function(player, index) {
+    if (index < 10) {
+      renderPlayerScore(player.name, player.score, index + 1, index);
+    } else if (player.id == userId) {
+      renderPlayerScore(player.name, player.score, index + 1, 10);
     }
   });
 }
 
-function renderScore(score) {
+function renderPlayerScore(name, score, ranking, line) {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
-  var paddedScore = ("00000000" + score).slice(-8);
+  var paddedRanking = ("000" + ranking).slice(-3);
+  var paddedName = ("          " + name.toUpperCase()).slice(-10);
+  var paddedScore = ("000000" + score).slice(-6);
   context.shadowColor = uiColor;
   context.fillStyle = uiColor;
-  context.font = "20px VCR_OSD_MONO";
-  context.fillText("SCORE " + paddedScore, 30, 40);
+  context.font = "16px VCR_OSD_MONO";
+  context.fillText(paddedRanking + " " + paddedName + " " + paddedScore, 30, 30 + (20 * line));
 }
 
 function renderFood(frame) {

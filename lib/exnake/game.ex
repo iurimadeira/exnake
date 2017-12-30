@@ -38,6 +38,12 @@ defmodule Exnake.Game do
     |> Player.check_body_collisions()
     |> Food.next_state()
     |> format_frame
+    |> order_by_score
+  end
+
+  defp order_by_score(%{players: players} = state) do
+    ordered_players = Enum.sort_by(players, fn player -> player.score end, &>=/2)
+    %{state | players: ordered_players}
   end
 
   defp format_frame(%{players: players_state} = state) do
