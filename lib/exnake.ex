@@ -8,11 +8,12 @@ defmodule Exnake do
 
     # Define workers and child supervisors to be supervised
     children = [
-      #supervisor(Exnake.Repo, []),
+      # supervisor(Exnake.Repo, []),
       supervisor(Exnake.Endpoint, []),
       supervisor(Exnake.Game, []),
       supervisor(Exnake.Food, []),
-      worker(Exnake.Game.FrameBroadcaster, []),
+      supervisor(Exnake.Benchmark, []),
+      worker(Exnake.Game.FrameBroadcaster, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

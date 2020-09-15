@@ -21,19 +21,7 @@ defmodule Exnake.Game do
 
   def die(_user_id), do: nil
 
-  def next_frame do
-    start_time = :os.system_time(:microsecond)
-    next_frame = calculate_next_frame()
-    end_time = :os.system_time(:microsecond)
-
-    Logger.debug(
-      "Calculated new frame for #{length(all_players_pids())} players in #{end_time - start_time}μs"
-    )
-
-    next_frame
-  end
-
-  defp calculate_next_frame do
+  def calculate_next_frame do
     %{players: next_player_states()}
     |> Player.check_body_collisions()
     |> Food.next_state()
