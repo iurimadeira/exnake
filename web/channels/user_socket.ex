@@ -2,10 +2,10 @@ defmodule Exnake.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "game:*", Exnake.GameChannel
+  channel("game:*", Exnake.GameChannel)
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  transport(:websocket, Phoenix.Transports.WebSocket)
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
@@ -21,13 +21,20 @@ defmodule Exnake.UserSocket do
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
     auth = Phoenix.Token.verify(socket, "token", token)
+
     case auth do
       {:ok, verified_user_id} ->
         {:ok, assign(socket, :user_id, verified_user_id)}
-      {:error, _} -> :error
+
+      {:error, _} ->
+        :error
     end
   end
-  def connect(_params, _socket), do: :error
+
+  def connect(params, socket) do
+    IO.inspect({params, socket})
+    :error
+  end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #

@@ -3,10 +3,10 @@
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/my_app/endpoint.ex":
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 
 const token = document.head.querySelector("[name=token]").content
-let socket = new Socket("/socket", {params: {token: token}})
+let socket = new Socket("/socket", { params: { token: token } })
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -68,7 +68,7 @@ let mapHeight = 90;
 
 // Now that you are connected, you can join channels with a topic:
 let channelUserId = null;
-let gameChannel = socket.channel("game:play", {"name": prompt("Please, enter your name:")})
+let gameChannel = socket.channel("game:play", { "name": prompt("Please, enter your name:") })
 gameChannel.join()
   .receive("ok", resp => {
     console.log("Joined successfully", resp);
@@ -79,29 +79,29 @@ gameChannel.join()
 document.addEventListener("keydown", event => {
   switch (event.which) {
     case 38:
-      gameChannel.push("change_direction", {direction: "up"})
+      gameChannel.push("change_direction", { direction: "up" })
       break;
     case 40:
-      gameChannel.push("change_direction", {direction: "down"})
+      gameChannel.push("change_direction", { direction: "down" })
       break;
     case 37:
-      gameChannel.push("change_direction", {direction: "left"})
+      gameChannel.push("change_direction", { direction: "left" })
       break;
     case 39:
-      gameChannel.push("change_direction", {direction: "right"})
+      gameChannel.push("change_direction", { direction: "right" })
       break;
   }
 
 })
 
 gameChannel.on("new_frame", payload => {
-    renderFrame(payload.frame, channelUserId);
+  renderFrame(payload.frame, channelUserId);
 })
 
 function renderFrame(frame, userId) {
   var canvas = document.getElementById("game");
   var context = canvas.getContext("2d");
-  context.canvas.width  = window.innerWidth;
+  context.canvas.width = window.innerWidth;
   context.canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.shadowBlur = glowFactor;
@@ -113,11 +113,11 @@ function renderFrame(frame, userId) {
 }
 
 function renderPlayers(frame, userId) {
-  frame.players.forEach (function(player) {
+  frame.players.forEach(function (player) {
     if (player.id == userId) {
       renderPlayer(player, playerColor);
     } else {
-      renderPlayer(player, enemiesColor);
+      // renderPlayer(player, enemiesColor);
     }
   });
 }
@@ -127,7 +127,7 @@ function renderHud(frame, userId) {
 }
 
 function renderScore(frame, userId) {
-  frame.players.forEach (function(player, index) {
+  frame.players.forEach(function (player, index) {
     if (index < 10) {
       renderPlayerScore(player.name, player.score, index + 1, index);
     } else if (player.id == userId && index > 10) {
@@ -149,13 +149,13 @@ function renderPlayerScore(name, score, ranking, line) {
 }
 
 function renderFood(frame) {
-  frame.food.forEach(function(food) {
+  frame.food.forEach(function (food) {
     renderSquare(food.x, food.y, foodColor);
   });
 }
 
 function renderPlayer(player, color) {
-  player.body.forEach (function(square) {
+  player.body.forEach(function (square) {
     renderSquare(square.x, square.y, color);
   });
 }

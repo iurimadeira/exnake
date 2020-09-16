@@ -1,6 +1,8 @@
 defmodule Exnake.Benchmark do
   use GenServer
 
+  require Logger
+
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
@@ -25,7 +27,7 @@ defmodule Exnake.Benchmark do
       }) do
     new_total_quantity = total_quantity + quantity + skip_quantity
 
-    IO.inspect(
+    Logger.info(
       "#{NaiveDateTime.utc_now()} # #{new_total_quantity} runs # #{quantity} GS/s # #{
         skip_quantity
       } skips/s"

@@ -3,7 +3,7 @@ defmodule Exnake.Game.FrameBroadcaster do
   alias Exnake.{Endpoint, Game}
 
   @game_states_per_second 10
-  @tick_duration 1000 / @game_states_per_second
+  @tick_duration trunc(1000 / @game_states_per_second)
 
   ## Client
 
@@ -13,14 +13,14 @@ defmodule Exnake.Game.FrameBroadcaster do
 
   ## Server
   def init([]) do
-    calculate_game_state(NaiveDateTime.utc_now(), trunc(@tick_duration))
+    schedule_frame_broadcast()
 
-    {:ok, []}
+    {:ok, %{last_tick: NaiveDateTime.utc_now()}}
   end
 
-  def calculate_game_state(last_tick, tick_duration) do
+  def handle_info({:broadcast_frame}, %{last_tick: last_tick}) do
     now = NaiveDateTime.utc_now()
-    next_game_state_at = NaiveDateTime.add(last_tick, tick_duration, :millisecond)
+    next_game_state_at = NaiveDateTime.add(last_tick, @tick_duration, :millisecond)
 
     new_last_tick =
       if NaiveDateTime.compare(next_game_state_at, now) == :lt do
@@ -32,6 +32,10 @@ defmodule Exnake.Game.FrameBroadcaster do
         last_tick
       end
 
-    calculate_game_state(new_last_tick, tick_duration)
+    schedule_frame_broadcast()
+
+    {:noreply, %{last_tick: new_last_tick}}
   end
+
+  def schedule_frame_broadcast(), do: send(self(), {:broadcast_frame})
 end
