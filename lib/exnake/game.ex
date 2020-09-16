@@ -1,7 +1,8 @@
 defmodule Exnake.Game do
   use Supervisor
   require Logger
-  alias Exnake.{Endpoint, Player, Game, Food}
+  alias ExnakeWeb.Endpoint
+  alias Exnake.{Player, Game, Food}
 
   ## Client
 

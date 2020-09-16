@@ -1,6 +1,7 @@
 defmodule Exnake.Game.FrameBroadcaster do
   use GenServer
-  alias Exnake.{Endpoint, Game}
+  alias ExnakeWeb.Endpoint
+  alias Exnake.Game
 
   @game_states_per_second 10
   @tick_duration trunc(1000 / @game_states_per_second)

@@ -3,24 +3,29 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
 
 # General application configuration
-#config :exnake, ecto_repos: [Exnake.Repo]
+use Mix.Config
+
+# config :exnake, ecto_repos: [Exnake.Repo]
 
 # Configures the endpoint
-config :exnake, Exnake.Endpoint,
-  http: [port: 12345, ip: {0, 0, 0, 0}],
-  secret_key_base: "9zl5Zv3PHmKC21uF5rEYksH3FlMyNtUeooaDO3LA7s8/3WH7LRB8FzNDnsEoM0cb",
-  render_errors: [view: Exnake.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Exnake.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+config :exnake, ExnakeWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "y7xBMlO7DfnK1X7UcfQ0vtKRAlMCsBOPi0xKLC5chLji2PrqEHuv6SaIhMa9TIxR",
+  render_errors: [view: ExnakeWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Exnake.PubSub,
+  live_view: [signing_salt: "ZmT/fJxX"],
+  http: [port: 12345, compress: true]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
