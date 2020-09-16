@@ -17,7 +17,7 @@ defmodule Exnake.DummyClient do
   end
 
   def init(url) do
-    token = Phoenix.Token.sign(Exnake.Endpoint, "token", UUID.uuid4())
+    token = Phoenix.Token.sign(ExnakeWeb.Endpoint, "token", UUID.uuid4())
     {:connect, url, [token: token], %{first_join: true, ping_ref: 1}}
   end
 

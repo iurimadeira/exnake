@@ -1,6 +1,6 @@
 defmodule ExnakeWeb.GameChannel do
   use ExnakeWeb, :channel
-  alias ExnakeWeb.{Game, Player}
+  alias Exnake.{Game, Player}
   require Logger
 
   def join("game:play", %{"name" => name} = payload, socket) do

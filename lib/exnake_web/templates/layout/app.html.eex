@@ -9,7 +9,7 @@
     <%= tag(:meta, name: "token", content: @token) %>
 
     <title>Exnake - Multiplayer Snake</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
 
   <body>

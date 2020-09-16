@@ -19,6 +19,7 @@ config :exnake, ExnakeWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  http: [port: 12345, compress: true],
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
