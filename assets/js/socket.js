@@ -5,6 +5,8 @@
 // and connect at the socket path in "lib/my_app/endpoint.ex":
 import { Socket } from "phoenix"
 
+var _ = require('lodash');
+
 const token = document.head.querySelector("[name=token]").content
 let socket = new Socket("/socket", { params: { token: token } })
 
@@ -94,8 +96,16 @@ document.addEventListener("keydown", event => {
 
 })
 
+var lastFrame = {};
+
 gameChannel.on("new_frame", payload => {
-  renderFrame(payload.frame, channelUserId);
+  if (!_.isEqual(payload.frame, lastFrame)) {
+    console.log('Rendering frame');
+    renderFrame(payload.frame, channelUserId);
+    lastFrame = payload.frame;
+  } else {
+    console.log('Skipping frame');
+  }
 })
 
 function renderFrame(frame, userId) {
@@ -117,7 +127,7 @@ function renderPlayers(frame, userId) {
     if (player.id == userId) {
       renderPlayer(player, playerColor);
     } else {
-      // renderPlayer(player, enemiesColor);
+      renderPlayer(player, enemiesColor);
     }
   });
 }

@@ -3,8 +3,8 @@ defmodule Exnake.Game.FrameBroadcaster do
   alias ExnakeWeb.Endpoint
   alias Exnake.Game
 
-  @game_states_per_second 10
-  @tick_duration trunc(1000 / @game_states_per_second)
+  @ticks_per_second 5
+  @tick_duration trunc(1000 / @ticks_per_second)
 
   ## Client
 
@@ -25,8 +25,9 @@ defmodule Exnake.Game.FrameBroadcaster do
 
     new_last_tick =
       if NaiveDateTime.compare(next_game_state_at, now) == :lt do
-        Endpoint.broadcast("game:play", "new_frame", %{frame: Game.calculate_next_frame()})
-        GenServer.cast(Exnake.Benchmark, {:register_new_game_state})
+        last_frame = GenServer.call(Exnake.Game.Loop, {:get_last_game_state})
+        Endpoint.broadcast("game:play", "new_frame", %{frame: last_frame})
+        GenServer.cast(Exnake.Benchmark, {:register_new_tick})
         now
       else
         GenServer.cast(Exnake.Benchmark, {:register_skip})

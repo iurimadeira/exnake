@@ -16,6 +16,7 @@
     <canvas id="game">
     </canvas>
 
+    <script src="/js/lodash.js"></script>
     <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

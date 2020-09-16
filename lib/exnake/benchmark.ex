@@ -12,7 +12,7 @@ defmodule Exnake.Benchmark do
     {:ok, %{total_quantity: 0, quantity: 0, skip_quantity: 0}}
   end
 
-  def handle_cast({:register_new_game_state}, %{quantity: quantity} = state) do
+  def handle_cast({:register_new_tick}, %{quantity: quantity} = state) do
     {:noreply, %{state | quantity: quantity + 1}}
   end
 

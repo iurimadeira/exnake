@@ -1,4 +1,4 @@
-defmodule Exnake.DummyClient do
+defmodule Exnake.DummyPlayer do
   @moduledoc false
   require Logger
   alias Phoenix.Channels.GenSocketClient

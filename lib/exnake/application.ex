@@ -12,6 +12,7 @@ defmodule Exnake.Application do
       supervisor(Exnake.Game, []),
       supervisor(Exnake.Food, []),
       supervisor(Exnake.Benchmark, []),
+      worker(Exnake.Game.Loop, []),
       worker(Exnake.Game.FrameBroadcaster, []),
       # Exnake.Repo,
       ExnakeWeb.Telemetry,
