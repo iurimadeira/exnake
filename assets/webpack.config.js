@@ -19,7 +19,9 @@ module.exports = (env, options) => {
     entry: {
       'app': glob.sync('./vendor/**/*.js').concat(['./js/app.js']),
       'socket': './js/socket.js',
-      'lodash': './js/lodash.js'
+      'lodash': './js/lodash.js',
+      'differ': './js/differ.js',
+      'gameRenderer': './js/game_renderer.js',
     },
     output: {
       filename: '[name].js',

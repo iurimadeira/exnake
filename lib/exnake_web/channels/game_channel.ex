@@ -1,5 +1,6 @@
 defmodule ExnakeWeb.GameChannel do
   use ExnakeWeb, :channel
+  alias ExnakeWeb.Endpoint
   alias Exnake.{Game, Player}
   require Logger
 
@@ -9,6 +10,7 @@ defmodule ExnakeWeb.GameChannel do
 
       case Game.join(socket.assigns.user_id, name) do
         {:ok, response} ->
+          send(self, {:after_join, payload})
           {:ok, response, socket}
 
         error ->
@@ -17,6 +19,15 @@ defmodule ExnakeWeb.GameChannel do
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  def handle_info({:after_join, _payload}, socket) do
+    %{game_state_count: count, last_game_state: last_game_state} =
+      GenServer.call(Exnake.Game.Loop, {:get_last_game_state})
+
+    push(socket, "starting_state", %{count: count, frame: last_game_state})
+
+    {:noreply, socket}
   end
 
   def terminate(_reason, socket) do

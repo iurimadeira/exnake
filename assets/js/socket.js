@@ -5,7 +5,11 @@
 // and connect at the socket path in "lib/my_app/endpoint.ex":
 import { Socket } from "phoenix"
 
-var _ = require('lodash');
+const Differ = require('./differ');
+var differ = new Differ();
+
+const GameRenderer = require('./game_renderer');
+var gameRenderer = new GameRenderer();
 
 const token = document.head.querySelector("[name=token]").content
 let socket = new Socket("/socket", { params: { token: token } })
@@ -56,21 +60,10 @@ let socket = new Socket("/socket", { params: { token: token } })
 
 socket.connect()
 
-// Colors
-let enemiesColor = '#A10EEC'; //Purple
-let gridColor = '#00E6FE'; //Cyan
-let foodColor = '#FD1999'; //Pink
-let uiColor = '#FFF'; //Yellow
-let playerColor = '#99FC20'; //Green
-let glowFactor = 20;
-
-// Map Size
-let mapWidth = 160;
-let mapHeight = 90;
-
 // Now that you are connected, you can join channels with a topic:
 let channelUserId = null;
 let gameChannel = socket.channel("game:play", { "name": prompt("Please, enter your name:") })
+
 gameChannel.join()
   .receive("ok", resp => {
     console.log("Joined successfully", resp);
@@ -96,141 +89,27 @@ document.addEventListener("keydown", event => {
 
 })
 
-var lastFrame = {};
+var lastFrame;
+var count;
 
-gameChannel.on("new_frame", payload => {
-  if (!_.isEqual(payload.frame, lastFrame)) {
-    console.log('Rendering frame');
-    renderFrame(payload.frame, channelUserId);
-    lastFrame = payload.frame;
-  } else {
-    console.log('Skipping frame');
-  }
+gameChannel.on("starting_state", payload => {
+  count = payload.count;
+  lastFrame = payload.frame;
+  gameRenderer.renderFrame(payload.frame, channelUserId);
+  console.log(`starting_state count: ${payload.count}`);
 })
 
-function renderFrame(frame, userId) {
-  var canvas = document.getElementById("game");
-  var context = canvas.getContext("2d");
-  context.canvas.width = window.innerWidth;
-  context.canvas.height = window.innerHeight;
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.shadowBlur = glowFactor;
-
-  renderBackgroundGrid();
-  renderHud(frame, userId);
-  renderPlayers(frame, userId);
-  renderFood(frame);
-}
-
-function renderPlayers(frame, userId) {
-  frame.players.forEach(function (player) {
-    if (player.id == userId) {
-      renderPlayer(player, playerColor);
-    } else {
-      renderPlayer(player, enemiesColor);
-    }
-  });
-}
-
-function renderHud(frame, userId) {
-  renderScore(frame, userId);
-}
-
-function renderScore(frame, userId) {
-  frame.players.forEach(function (player, index) {
-    if (index < 10) {
-      renderPlayerScore(player.name, player.score, index + 1, index);
-    } else if (player.id == userId && index > 10) {
-      renderPlayerScore(player.name, player.score, index + 1, 10);
-    }
-  });
-}
-
-function renderPlayerScore(name, score, ranking, line) {
-  var canvas = document.getElementById("game");
-  var context = canvas.getContext("2d");
-  var paddedRanking = ("000" + ranking).slice(-3);
-  var paddedName = ("          " + name.toUpperCase()).slice(-10);
-  var paddedScore = ("000000" + score).slice(-6);
-  context.shadowColor = uiColor;
-  context.fillStyle = uiColor;
-  context.font = "16px VCR_OSD_MONO";
-  context.fillText(paddedRanking + " " + paddedName + " " + paddedScore, 30, 30 + (20 * line));
-}
-
-function renderFood(frame) {
-  frame.food.forEach(function (food) {
-    renderSquare(food.x, food.y, foodColor);
-  });
-}
-
-function renderPlayer(player, color) {
-  player.body.forEach(function (square) {
-    renderSquare(square.x, square.y, color);
-  });
-}
-
-function squareXSize() {
-  return window.innerWidth / mapWidth;
-}
-
-function squareYSize() {
-  return window.innerHeight / mapHeight;
-}
-
-function renderSquare(x, y, color = "#000") {
-  var canvas = document.getElementById("game");
-  var context = canvas.getContext("2d");
-  context.shadowColor = color;
-  context.fillStyle = color;
-  context.fillRect(x * squareXSize(), y * squareYSize(), squareXSize(), squareYSize());
-}
-
-function renderBackgroundGrid() {
-  var canvas = document.getElementById("game");
-  var context = canvas.getContext("2d");
-
-  let verticalStep = 0;
-  let horizontalStep = 0;
-  while (true) {
-    if (drawGridLine(context, 'vertical', verticalStep) == false) {
-      break;
-    }
-    verticalStep = verticalStep + 1;
+gameChannel.on("new_frame", payload => {
+  if (lastFrame != undefined && payload.count == count + 1) {
+    var frameString = differ.decode(JSON.stringify(lastFrame), payload.delta);
+    var frame = JSON.parse(frameString)
+    count = payload.count;
+    lastFrame = frame;
+    gameRenderer.renderFrame(frame, channelUserId);
+    console.log(`new_frame count: ${payload.count}`);
+  } else {
+    console.log(`Wrong count. Skipping... Previous: ${count} | New: ${payload.count}`);
   }
-  while (true) {
-    if (drawGridLine(context, 'horizontal', horizontalStep) == false) {
-      break;
-    }
-    horizontalStep = horizontalStep + 1;
-  }
-}
-
-function drawGridLine(context, direction, step) {
-  let offset = 15;
-  let spaceBetweenLines = 30;
-  let position = (step * spaceBetweenLines) + offset;
-  let result = false;
-
-  context.strokeStyle = gridColor;
-  context.shadowColor = gridColor;
-  context.lineWidth = 1;
-
-  if (direction == 'vertical' && position <= window.innerWidth) {
-    context.beginPath();
-    context.moveTo(position, 0);
-    context.lineTo(position, window.innerHeight);
-    context.stroke();
-    result = true;
-  } else if (direction == 'horizontal' && position <= window.innerHeight) {
-    context.beginPath();
-    context.moveTo(0, position);
-    context.lineTo(window.innerWidth, position);
-    context.stroke();
-    result = true;
-  }
-
-  return result;
-}
+})
 
 export default socket
